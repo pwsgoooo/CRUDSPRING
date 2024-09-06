@@ -169,19 +169,19 @@
             alert("목록으로 돌아갑니다.");
             window.location.href="/board";
         }
-        function registerdat(){
-            const inputdt = document.getElementById("inputdt").value;
-            const url = "/registerdat/"+parseInt(${detail.id});
-            if(confirm("댓글을 등록합니다.")){
+        function updatedat(id){
+            const updat = document.getElementById("updat").value;
+            const url = "/updatedat/"+parseInt(${detail.id})+"/"+id;
+            if(confirm("댓글을 수정합니다.")){
                 $.ajax({
                     url: url,
                     type: "POST",
                     data:{
-                        "inputdt":inputdt
+                        "updat":updat
                     },
                     success: function(){
-                        alert("댓글 등록이 완료되었습니다.");
-                        window.location.href="/detailviewbyid/"+parseInt("${detail.id}");
+                        alert("댓글이 수정되었습니다.");
+                        window.location.href="/detailviewbyid/${detail.id}/"+id;
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         alert("오류가 발생했습니다: " + textStatus);
@@ -199,25 +199,27 @@
 
     <p class="bold"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><c:out value="${upcomm.regMember}"/><span id="nn" class="fred ">&nbsp; 0 &nbsp;</span><span>분전</span></p>
     <div class="dt" style="height: 130px;">
-        <form action="" method="post">
-            <input type="text" name="updat" id="updat"/>
-            <input type="submit" name="submitupdat" id="submitupdat" class="btn"/>
-        </form>
+<%--        <form action="" method="get">--%>
+        <input type="text" name="updat" id="updat" placeholder="${upcomm.comment}"/>
+        <input onclick="updatedat(${upcomm.id});" type="submit" name="submitupdat" id="submitupdat" class="btn" value="update ⎛⑉・⊝・⑉⎞"/>
+<%--        </form>--%>
     </div>
     <hr style="margin:3% 0;">
 
 
     <c:choose>
         <c:when test="${not empty comments}">
+
             <c:forEach items="${comments}" var="comment">
-            <c:if test="${comments.id ne upcomm.id}">
-                <p class="bold"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><c:out value="${comment.regMember}"/><span id="nn" class="fred ">&nbsp; 0 &nbsp;</span><span>분전</span></p>
-                <div class="dt" style="height: 130px;">
-                    <br/>
-                    <p><c:out value="${comment.comment}"/></p>
-                    <p>댓글의 id : <c:out value="${comment.id}"/></p>
-                </div>
-                <hr style="margin:3% 0;">
+<%--                <c:if test="${comments.id ne upcomm.id}">--%>
+                    <p class="bold"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><c:out value="${comment.regMember}"/><span id="nn" class="fred ">&nbsp; 0 &nbsp;</span><span>분전</span></p>
+                    <div class="dt" style="height: 130px;">
+                        <br/>
+                        <p><c:out value="${comment.comment}"/></p>
+                        <p>댓글의 id : <c:out value="${comment.id}"/></p>
+                    </div>
+                    <hr style="margin:3% 0;">
+<%--                </c:if>--%>
             </c:forEach>
 
         </c:when>

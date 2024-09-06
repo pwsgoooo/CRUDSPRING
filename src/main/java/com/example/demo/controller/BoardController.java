@@ -33,7 +33,6 @@ public class BoardController {
     public String gethome(@RequestParam(name = "page", defaultValue = "0") long offset, @RequestParam(name="page", defaultValue = "1") long nowPage, Model model) {
         List<BoardDto> list = boardService.printActBoards_(offset);
 
-
         long totalCount = boardService.cntLists();
         long totalPages = (totalCount + 20 - 1) / 20;
         long startPage = Math.max(nowPage - 4, 1);
@@ -110,6 +109,8 @@ public class BoardController {
         } catch (Exception e) {
             throw new IOException(e);
         }
+
+
             return "detailviewbyid";
     }
 
@@ -173,26 +174,31 @@ public class BoardController {
 //댓글 수정 삭제
 
     // pid : 본 게시글 id, id : 해당 pid의 댓글 id
-    @GetMapping("/updatedap/{pid}/{id}")
+    @PostMapping("/updatedatp/{pid}/{id}")
     public String toupdatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, Model model){
-        BoardDto detailrow = boardService.printBoardById(pid);
+        BoardDto detail = boardService.printBoardById(pid);
+       // boardService.updatedat(id, updat);
+
         List<BoardCommentDto> comments = boardService.printComments(pid);
         BoardCommentDto upcomm = boardService.printComment(id);
 
-        model.addAttribute("detailrow",detailrow);
+        model.addAttribute("detail",detail);
         model.addAttribute("comments",comments);
         model.addAttribute("upcomm",upcomm);
         return "detailviewbyidinsertdat";
     }
-    @PostMapping("/updatedatf/{id}")
-    public String updatedat(@PathVariable Long id, @RequestParam("inputdt") String inputdt){
-        boardService.updatedat(id, inputdt);
-        return "redirect:/detailviewbyid/"+id;
+
+
+    @PostMapping("/updatedat/{pid}/{id}")
+    public String updatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, @PathVariable("updat") String updat, Model model){
+        boardService.updatedat(id, updat);
+
+        return "redirect:/detailviewbyid/"+pid;
     }
 
 
 
-    @GetMapping("/updelurl/{pid}/{id}")
+    @GetMapping("/updeldat/{pid}/{id}")
     public String updeldat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, Model model){
         try{
             boardService.softDeldat(id);

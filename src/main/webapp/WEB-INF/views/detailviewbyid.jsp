@@ -107,15 +107,19 @@
         }
 
         div.writedt p {
-            margin-top: -5px;
+            margin-top: -15px;
             color:#333;
             font-weight: 800;
         }
 
-        div.writedt p.inb{margin-top:-20px;}
+        div.writedt p.inb{margin-top:-4px;}
 
         .btnlist{
             display: inline-flex;
+        }
+
+        div.dt{
+            padding: 20px;
         }
     </style>
 </head>
@@ -202,26 +206,25 @@
     <c:choose>
         <c:when test="${not empty comments}">
             <c:forEach items="${comments}" var="comment">
-            <script>
-                const updaturl = new URL("/updatedap/" + ${detail.id} + "/" + ${comment.id});
-                const updelurl = new URL("/updeldap/" + ${detail.id} + "/" + ${comment.id});
-                function updaturl(){
-                    window.location.href= updateurl;
-                }
-
-                function updelurl(){
-                    window.location.href= updelurl;
-                }
-            </script>
-                <p class="bold"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><c:out value="${comment.regMember}"/><span id="nn" class="fred ">&nbsp; 0 &nbsp;</span><span>분전</span></p>
+                <p class="bold"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><c:out value="${comment.regMember}"/>
+                    <span id="nn" class="fred ">&nbsp;
+                        <c:choose>
+                            <c:when test="${not empty comment.modDate}">
+                                <c:out value="${comment.modDate}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:out value="${comment.regDate}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </span></p>
                 <div class="dt" style="height: 130px;">
                     <ul style="float:right;margin-top: -20px;color:white; list-style: none; font-size:0.9em;display:inline-flex">
-                        <li style="display: inline-block; cursor: pointer;" class="fred" onclick="updaturl();">
+                        <button onclick="window.location.href='/updatedatp/${detail.id}/${comment.id}'" style="display: inline-block; cursor: pointer;" class="fred" >
                             수정&nbsp;
-                        </li>|
-                        <li style="display: inline-block; cursor: pointer;" class="fred" onclick="updelurl();">
+                        </button>|
+                        <button onclick="window.location.href='/updeldat/${detail.id}/${comment.id}'" style="display: inline-block; cursor: pointer;" class="fblue" >
                             &nbsp;삭제
-                        </li>
+                        </button>
                     </ul>
                     <br/>
                     <p><c:out value="${comment.comment}"/></p>

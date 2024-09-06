@@ -14,23 +14,6 @@
         ORDER BY reg_date DESC;
     </select>
 
-    <select id="printBoardList_i" resultType="com.example.demo.dto.BoardDto">
-        SELECT *,
-               CASE
-                   WHEN reg_date::date = CURRENT_DATE THEN TO_CHAR(reg_date, 'HH24:MI:SS')
-                   ELSE TO_CHAR(reg_date, 'YYYY-MM-DD HH24:MI:SS')
-                   END AS display_date
-        FROM board
-        ORDER BY reg_date DESC
-        LIMIT 20
-            OFFSET(
-            CASE WHEN COALESCE(#{nowPage},0)&lt;=0 THEN 0
-                 ELSE (#{nowPage}-1)*20
-                END
-            )
-    </select>
-
-
     <select id="searchBoardLists_mem" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
         select * from board where reg_member LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
     </select>
@@ -43,27 +26,11 @@
         select * from board where reg_date LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
     </select>
 
-
-
-<!--    <select id="consearch" resultType="com.example.demo.dto.BoardDto">-->
-<!--        SELECT * FROM board where 1=1-->
-<!--        <if test="regMember != null and regMember != ''">-->
-<!--            AND RegMember LIKE '%#{RegMember}%'-->
-<!--        </if>-->
-<!--        <if test="title != null and title != ''">-->
-<!--            AND title = #{title}-->
-<!--        </if>-->
-<!--        <if test="regDate != null and regDate != ''">-->
-<!--            AND regDate = #{regDate}-->
-<!--        </if>-->
-<!--    </select>-->
-
-<!--    업뎃 댓글 삭제-->
-
     <update id="updatedat" parameterType="com.example.demo.dto.BoardCommentDto">
         UPDATE board_comment
         SET
-        comment = #{comment},
+        parent_id = parent_id,
+        comment = COALESCE(#{comment},comment),
         mod_date = #{modDate},
         mod_ip = #{modIp},
         mod_member = #{modMember}
@@ -92,7 +59,12 @@
 
 
     <select id="printComments" parameterType="java.lang.Long" resultType="com.example.demo.dto.BoardCommentDto">
-        SELECT * FROM board_comment WHERE board_id = #{id}
+        SELECT * FROM board_comment WHERE del_date IS NULL and board_id = #{id}
+        ORDER BY (mod_date, reg_date) DESC
+    </select>
+
+    <select id="printComment" parameterType="java.lang.Long" resultType="com.example.demo.dto.BoardCommentDto">
+        SELECT * FROM board_comment WHERE del_date IS NULL and id = #{id}
     </select>
 
 
@@ -142,17 +114,6 @@
             select id from board WHERE id = #{id};
         </selectKey>
     </update>
-
-<!--    <update id="updateComment" parameterType="com.example.demo.dto.BoardCommentDto">-->
-<!--        UPDATE board_comment-->
-<!--        SET title = #{title}, content = #{content}, mod_ip = #{modIp}, mod_date = #{modDate}, mod_member = #{modMember}-->
-<!--        WHERE id = #{id}-->
-<!--    </update>-->
-
-
-
-
-
 
     <select id="printActBoards" resultType="com.example.demo.dto.BoardDto">
 

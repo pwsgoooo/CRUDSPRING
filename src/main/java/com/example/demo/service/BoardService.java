@@ -89,7 +89,7 @@ public class BoardService {
             returnlist = boardMapper.searchBoardLists_title(sccon);
         }else if("작성일".equals(searching)){
             returnlist = boardMapper.searchBoardLists_date(sccon);
-        } //else로 전체 리스트 조회하는 방법 고려(   )
+        } //else로 전체 리스트 조회하는 방법 고려안해도 될듯:제목 텍스트 클릭시 맨 첫화면으로 감
         return returnlist;
 
     }
