@@ -31,7 +31,7 @@ public class BoardController {
 
     @GetMapping("/board")
     public String gethome(@RequestParam(name = "page", defaultValue = "0") long offset, @RequestParam(name="page", defaultValue = "1") long nowPage, Model model) {
-        List<BoardDto> list = boardService.printActBoards(offset);
+        List<BoardDto> list = boardService.printActBoards_(offset);
 
 
         long totalCount = boardService.cntLists();
@@ -41,6 +41,7 @@ public class BoardController {
         long currcnt = (nowPage<totalPages) ? 20 : totalCount%20;
 
         model.addAttribute("list", list);
+//        model.addAttribute("list2", list2);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("nowPage", nowPage);
@@ -55,11 +56,25 @@ public class BoardController {
     @GetMapping("/consearch")
     public String consearch(@RequestParam("searching") String searching,
                             @RequestParam("sccon") String sccon,
+                            @RequestParam(name = "page", defaultValue = "0") long offset,
+                            @RequestParam(name="page", defaultValue = "1") long nowPage,
                             Model model){
-
-
-        List<BoardDto> list = boardService.searchBoardLists(searching,sccon);
+        List<BoardDto> list = boardService.searchBoardLists(searching,sccon); //offset
         model.addAttribute("list",list);
+
+        long totalCount = list.size();
+        long totalPages = (totalCount + 20 - 1) / 20;
+        long startPage = Math.max(nowPage - 4, 1);
+        long endPage = Math.min(nowPage + 4, totalPages);
+        long currcnt = (nowPage<totalPages) ? 20 : totalCount%20;
+
+        model.addAttribute("list", list);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("currcnt", currcnt);
 
         return "board";
     }
@@ -101,16 +116,15 @@ public class BoardController {
     @GetMapping("/detailviewbyidupdate/{id}")
     public String toupdate(@PathVariable("id") Long id, Model model) throws IOException {
         try {
-            BoardDto detailrow = boardService.printBoardById(id);
+            BoardDto detail = boardService.printBoardById(id);
             List<BoardCommentDto> comments = boardService.printComments(id);
             model.addAttribute("comments",comments);
-            model.addAttribute("detail", detailrow);
-            model.addAttribute("msg", "게시글이 업데이트되었습니다.");
+            model.addAttribute("detail", detail);
 
         } catch (Exception e) {
             throw new IOException(e);
         }
-        return "redirect:/detailviewbyidupdate";
+        return "detailviewbyidupdate";
     }
 
 
@@ -120,7 +134,7 @@ public class BoardController {
         try {
             boardService.registerdat(id, inputdt);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
         return "redirect:/detailviewbyid/"+id;
     }
@@ -148,10 +162,9 @@ public class BoardController {
     @GetMapping("/delboard/{id}")
     public String doDelete(@PathVariable("id") Long id) throws IOException{
         try{
-
             boardService.softDelBoard(id);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
         finally {
             return "redirect:/board";
@@ -159,8 +172,19 @@ public class BoardController {
     }
 //댓글 수정 삭제
 
-    //댓 수정 삭제
-    @PostMapping("/updatedat/{id}")
+    // pid : 본 게시글 id, id : 해당 pid의 댓글 id
+    @GetMapping("/updatedap/{pid}/{id}")
+    public String toupdatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, Model model){
+        BoardDto detailrow = boardService.printBoardById(pid);
+        List<BoardCommentDto> comments = boardService.printComments(pid);
+        BoardCommentDto upcomm = boardService.printComment(id);
+
+        model.addAttribute("detailrow",detailrow);
+        model.addAttribute("comments",comments);
+        model.addAttribute("upcomm",upcomm);
+        return "detailviewbyidinsertdat";
+    }
+    @PostMapping("/updatedatf/{id}")
     public String updatedat(@PathVariable Long id, @RequestParam("inputdt") String inputdt){
         boardService.updatedat(id, inputdt);
         return "redirect:/detailviewbyid/"+id;
@@ -168,12 +192,12 @@ public class BoardController {
 
 
 
-    @GetMapping("/deldat/{id}")
-    public String dodat(@PathVariable("id") Long id, Model model) throws IOException{
+    @GetMapping("/updelurl/{pid}/{id}")
+    public String updeldat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, Model model){
         try{
             boardService.softDeldat(id);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
         finally {
             return "redirect:/board";

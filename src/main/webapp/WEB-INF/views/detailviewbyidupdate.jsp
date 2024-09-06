@@ -120,32 +120,33 @@
 <body>
 
 <script>
-
+    const leng = "${comments}".length;
+    let commentTime = new Array();
     <c:forEach var="comment" items="${comments}">
-    // Gather timestamps for each comment
-    for (var i =0; i <"${comments.length}"; i++;){
-        a.push({
-        modDate: "${comment[i].modDate}",
-        regDate: "${comment[i].regDate}"
-    });
+        // for (var i =0; i < leng ; i++){
+        commentTime.put("modDate", "${comment.modDate}" );
+        commentTime.put("regDate", "${comment.regDate}" );
+            <%--modDate: "${comment.modDate}",--%>
+            <%--regDate: "${comment.regDate}"--%>
+        // };
     </c:forEach>
 
+    const diffpos = document.getElementById("diffpos");
     function updateDifferences() {
         var now = new Date();
-        commentTimes.forEach(function(commentTime, index) {
+        for (var i = 0; i < leng; i++){
             var modDate = new Date(commentTime.modDate);
             var regDate = new Date(commentTime.regDate);
             var time = modDate ? modDate : regDate;
             var diffInMs = now - time;
-            var diffInMinutes = Math.floor(diffInMs / (1000 * 60)); // Convert milliseconds to minutes
+            var diffInMinutes = Math.floor(diffInMs / (1000 * 60));
 
-            // Assuming there's an element with an ID pattern like "diffpos" + index
-            var element = document.getElementById("diffpos");
-            if (element) {
-                element.textContent = diffInMinutes;
-            }
-            console.log("Comment " + index + ": " + diffInMinutes + " minutes ago");
-        });
+        }
+
+        if (diffpos) {
+            diffpos.textContent = diffInMinutes;
+        }
+
     }
 
     updateDifferences();

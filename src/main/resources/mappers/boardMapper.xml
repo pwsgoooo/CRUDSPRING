@@ -32,15 +32,15 @@
 
 
     <select id="searchBoardLists_mem" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
-        select * from board where reg_member LIKE CONCAT('%', #{sccon}, '%')
+        select * from board where reg_member LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
     </select>
 
     <select id="searchBoardLists_title" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
-        select * from board where title LIKE CONCAT('%', #{sccon}, '%')
+        select * from board where title LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
     </select>
 
     <select id="searchBoardLists_date" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
-        select * from board where reg_date LIKE CONCAT('%', #{sccon}, '%')
+        select * from board where reg_date LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
     </select>
 
 
@@ -160,7 +160,7 @@
                CASE
                    WHEN reg_date::date = CURRENT_DATE THEN TO_CHAR(reg_date, 'HH24:MI:SS')
                    ELSE TO_CHAR(reg_date, 'YYYY-MM-DD HH24:MI:SS')
-                   END AS display_date
+                   END AS dipdate
         FROM board
         WHERE board.del_date IS NULL
         ORDER BY reg_date DESC

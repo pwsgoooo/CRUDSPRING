@@ -114,6 +114,11 @@
 
         div.writedt p.inb{margin-top:-20px;}
 
+        /*.dt {*/
+        /*    margin-left:5%;*/
+        /*    width:90%;*/
+        /*}*/
+
         .btnlist{
             display: inline-flex;
         }
@@ -134,12 +139,13 @@
     <div class="w100" style="border:1px solid navajowhite; padding-top:50px;box-sizing: border-box;" name="content" id="content">
         <c:out value="${detail.content}"/>
     </div>
-    <div id="bottbtnlist">
-        <button onclick="toupdate();" class="btn bglighblue">수정</button>
-        <button onclick="tolist();" class="btn bggray">목록</button>
-    </div>
+    <script>
+        const updateurl = "/detailviewbyidupdate"+parseInt(${detail.id});
+
+    </script>
 
     <script>
+
         window.onload= function (){
             const cntdat = document.getElementById("inputdt");
             const printpos = document.getElementById("printpos");
@@ -151,7 +157,7 @@
 
         function toupdate(){
             if(confirm("게시글 수정 페이지로 이동합니다.")){
-                const updateurl = "/detailviewbyidupdate/"+parseInt(${detail.id});
+            <%--const updateurl = "/detailviewbyidupdate/"+parseInt(${detail.id});--%>
                 window.location.href= updateurl;
             }else{
                 alert("게시판 상세 페이지에 머무릅니다.");
@@ -188,41 +194,25 @@
         }
     </script>
 
-    <div class="writedt bglightgrey">
-        <p> 댓글 쓰기</p>
-        <input class="dat" type="text" name="inputdt" id="inputdt" placeholder="답글을 작성해주세요. 최대 200자까지 작성할 수 있습니다. 답글 버튼을 눌렀을때 화면에 나타납니다."/>
-        <p class=" inb"> <span id="printpos"> 0 </span> / 200</p>
-        <button onclick="registerdat();" type="submit" class="inb btn bggreen right02">등록</button>
-    </div>
+
     <hr style="margin:3% 0;">
 
-
+    <p class="bold"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><c:out value="${upcomm.regMember}"/><span id="nn" class="fred ">&nbsp; 0 &nbsp;</span><span>분전</span></p>
+    <div class="dt" style="height: 130px;">
+        <form action="" method="post">
+            <input type="text" name="updat" id="updat"/>
+            <input type="submit" name="submitupdat" id="submitupdat" class="btn"/>
+        </form>
+    </div>
+    <hr style="margin:3% 0;">
 
 
     <c:choose>
         <c:when test="${not empty comments}">
             <c:forEach items="${comments}" var="comment">
-            <script>
-                const updaturl = new URL("/updatedap/" + ${detail.id} + "/" + ${comment.id});
-                const updelurl = new URL("/updeldap/" + ${detail.id} + "/" + ${comment.id});
-                function updaturl(){
-                    window.location.href= updateurl;
-                }
-
-                function updelurl(){
-                    window.location.href= updelurl;
-                }
-            </script>
+            <c:if test="${comments.id ne upcomm.id}">
                 <p class="bold"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><c:out value="${comment.regMember}"/><span id="nn" class="fred ">&nbsp; 0 &nbsp;</span><span>분전</span></p>
                 <div class="dt" style="height: 130px;">
-                    <ul style="float:right;margin-top: -20px;color:white; list-style: none; font-size:0.9em;display:inline-flex">
-                        <li style="display: inline-block; cursor: pointer;" class="fred" onclick="updaturl();">
-                            수정&nbsp;
-                        </li>|
-                        <li style="display: inline-block; cursor: pointer;" class="fred" onclick="updelurl();">
-                            &nbsp;삭제
-                        </li>
-                    </ul>
                     <br/>
                     <p><c:out value="${comment.comment}"/></p>
                     <p>댓글의 id : <c:out value="${comment.id}"/></p>

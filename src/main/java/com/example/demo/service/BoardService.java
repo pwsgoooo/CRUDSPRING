@@ -10,9 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,6 +42,34 @@ public class BoardService {
     public List<BoardDto> printActBoards(Long offset) {
         return boardMapper.printActBoards(offset);
     }
+
+    @Transactional
+    public List<BoardDto> printActBoards_(Long offset) {
+        List<BoardDto> boards = boardMapper.printActBoards(offset);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        //LocalDateTime now = LocalDateTime.now();
+
+        return boards.stream().map(board -> {
+            BoardDto dto = new BoardDto();
+            dto.setId(board.getId());
+            dto.setTitle(board.getTitle());
+            dto.setRegDate(board.getRegDate());
+            dto.setRegIp(board.getRegIp());
+            dto.setRegMember(board.getRegMember());
+            dto.setDipdate(board.getRegIp());
+
+            DateTimeFormatter formatter;
+            if (board.getRegDate().toLocalDateTime().toLocalDate().isEqual(timestamp.toLocalDateTime().toLocalDate())) {
+                formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            } else {
+                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            }
+            dto.setDipdate(board.getRegDate().toLocalDateTime().format(formatter));
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 
 
 
@@ -74,6 +106,12 @@ public class BoardService {
     public BoardDto printBoardById(Long id) {
         BoardDto board = boardMapper.printBoardById(id);
         return board;
+    }
+
+    @Transactional
+    public BoardCommentDto printComment(Long id) {
+        BoardCommentDto comment = boardMapper.printComment(id);
+        return comment;
     }
 
     @Transactional

@@ -180,14 +180,7 @@
 <body>
 <script>
     window.onload=function(){
-        if("${datamsg}"){
-            alert("${datamsg}");
-        }
-        if("${msg}"){
-            alert("${msg}");
-        }
-
-        let totalcnt = "0";
+        let totalcnt = 0;
         let currcnt = 0;
         if("${totalCount}"){
             totalcnt="${totalCount}";
@@ -208,19 +201,17 @@
         }
 
         const searchForm = document.getElementById("searchForm");
-        const sccon = document.getElementById("sccon");
+        const sccon = document.getElementById("sccon").value;
         const staystatus = localStorage.getItem('staystatus');
         if(staystatus) {
             sccon.value= staystatus;
         }
 
         searchForm.addEventListener('submit',function(){
-            localStorage.setItem('staystatus',sccon.value);
+            localStorage.setItem('staystatus',sccon);
         });
 
         const searching = document.getElementById("searching").value;
-        const sccon = document.getElementById("sccon").value;
-
 
         function consearch(){
             $.ajax({
@@ -243,7 +234,7 @@
     }
 </script>
 <div class="container">
-    <h3>게시판 목록</h3>
+    <h3 style="display: block; cursor:grab;" onclick="window.location.href='/board';">게시판 목록</h3>
     <p class="inb">검색된 게시물 <span id="currcnt" style="color:#14AAFF"> 0 </span> / 총 게시물 <span id="totalcnt" style="color:#14AAFF"> 0 </span></p>
     <div class="inb right0" >
         <form action="/consearch" method="get" id="searchForm" class="inb right0" style="display: inline-flex">
@@ -299,9 +290,10 @@
                         <td><c:out value="${li.id}"/></td>
                         <td style="text-align: left; padding-left: 20px;" id="todetail" class="ellip" onclick="toupdate(parseInt('${li.id}'));"><c:out value="${li.title}"/></td>
                         <td><c:out value="${li.regMember}"/></td>
-                        <td><c:out value="${li.display_date}"/></td>
+                        <td><c:out value="${li.dipdate}"/></td>
                     </tr>
                 </c:forEach>
+
             </c:when>
             <c:otherwise>
                 <tr>

@@ -23,7 +23,7 @@ public class BoardDto{
     private String delIp;
     private String delMember;
 
-    private String display_date;
+    private String dipdate;
     private Long limit;
     private Long offset;
     private Long nowPage;
