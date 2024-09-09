@@ -203,11 +203,11 @@
         }
         function toupdate(id){
             if(confirm("해당 게시물을 업데이트 하시겠습니까?") == true ){
-                alert("게시글이 수정되었습니다."); // 성공여부 체크 안하고 뜨는 듯? (  )
+                alert("게시글이 수정되었습니다."); // 성공여부 체크 안하고 뜸
             }else{
                 alert("게시글 업데이트에 실패하였습니다.");
             }
-            window.location.href ='/updateboard/'+id;// 이게 안 먹고 폼데이터로 감
+            window.location.href ='/detailviewbyid/'+id;// 여기서 업데이트 처리
         }
 
         function tolist_update(){

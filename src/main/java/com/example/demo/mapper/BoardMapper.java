@@ -30,6 +30,8 @@ public interface BoardMapper {
     Long cntLists();
 
 
+
+
     List<BoardDto> searchBoardLists_mem(String sccon);
     List<BoardDto> searchBoardLists_title(String sccon);
     List<BoardDto> searchBoardLists_date(String sccon);
@@ -38,6 +40,8 @@ public interface BoardMapper {
 
     BoardDto printBoardById(Long id);
     List<BoardCommentDto> printComments(Long id);
+
+    List<BoardCommentDto> printComments_forupdate(Long id, Long pid);
     BoardCommentDto printComment(Long id);
 
     void registerBoard(BoardDto boardDto);

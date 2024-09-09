@@ -288,7 +288,7 @@
                 <c:forEach var="li" items="${list}">
                     <tr>
                         <td><c:out value="${li.id}"/></td>
-                        <td style="text-align: left; padding-left: 20px;" id="todetail" class="ellip" onclick="toupdate(parseInt('${li.id}'));"><c:out value="${li.title}"/></td>
+                        <td style="text-align: left; padding-left: 20px; white-space: nowrap;text-overflow:ellipsis; overflow: hidden; max-width: 50px;" id="todetail" class="ellip" onclick="toupdate(parseInt('${li.id}'));"><c:out value="${li.title}"/></td>
                         <td><c:out value="${li.regMember}"/></td>
                         <td><c:out value="${li.dipdate}"/></td>
                     </tr>

@@ -121,6 +121,12 @@ public class BoardService {
     }
 
     @Transactional
+    public List<BoardCommentDto> printComments_forupdate(Long id, Long pid){
+        List<BoardCommentDto> commentfupdate = boardMapper.printComments_forupdate(id, pid);
+        return commentfupdate;
+    }
+
+    @Transactional
     public void updateBoard(Long id, String title, String content) {
 
         BoardDto updtBoard = boardMapper.printBoardById(id);

@@ -155,7 +155,7 @@ public class BoardController {
     @PostMapping("/updateboard/{id}")
     public String updateboard(@PathVariable Long id, @RequestParam("title") String title, @RequestParam("content") String content){
         boardService.updateBoard(id, title, content);
-        return "redirect:/board";
+        return "redirect:/detailviewbyid/"+id; // 이쪽경로로 완료처리
     }
 
 
@@ -174,18 +174,16 @@ public class BoardController {
 //댓글 수정 삭제
 
     // pid : 본 게시글 id, id : 해당 pid의 댓글 id
-    @PostMapping("/updatedatp/{pid}/{id}")
-    public String toupdatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, Model model){
-        BoardDto detail = boardService.printBoardById(pid);
-       // boardService.updatedat(id, updat);
-
-        List<BoardCommentDto> comments = boardService.printComments(pid);
+    @GetMapping("/updatedatp/{pid}/{id}")
+    public String toupdatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id,Model model){
         BoardCommentDto upcomm = boardService.printComment(id);
-
-        model.addAttribute("detail",detail);
-        model.addAttribute("comments",comments);
         model.addAttribute("upcomm",upcomm);
-        return "detailviewbyidinsertdat";
+
+        List<BoardCommentDto> exupcomm = boardService.printComments_forupdate(id, pid);
+        model.addAttribute("exupcomm",exupcomm);
+
+
+        return "/detailviewbyidupdatedat";
     }
 
 

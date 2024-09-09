@@ -63,6 +63,14 @@
         ORDER BY (mod_date, reg_date) DESC
     </select>
 
+    <select id="printComments_forupdate" parameterType="java.lang.Long" resultType="com.example.demo.dto.BoardCommentDto">
+        SELECT *
+        FROM board_comment
+        WHERE del_date IS NULL
+          AND board_id = #{pid} AND id NOT IN (#{id})
+        ORDER BY mod_date DESC, reg_date DESC
+    </select>
+
     <select id="printComment" parameterType="java.lang.Long" resultType="com.example.demo.dto.BoardCommentDto">
         SELECT * FROM board_comment WHERE del_date IS NULL and id = #{id}
     </select>
