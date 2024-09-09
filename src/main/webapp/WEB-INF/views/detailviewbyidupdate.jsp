@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title> !!! let's update ggya > _ < !!! </title>
+    <title> !!! let's update board !!! </title>
 
     <style>
         html,body{

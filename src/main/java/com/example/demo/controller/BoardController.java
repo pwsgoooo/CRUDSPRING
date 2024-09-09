@@ -176,6 +176,8 @@ public class BoardController {
     // pid : 본 게시글 id, id : 해당 pid의 댓글 id
     @GetMapping("/updatedatp/{pid}/{id}")
     public String toupdatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id,Model model){
+        BoardDto detail = boardService.printBoardById(pid);
+        model.addAttribute("detail",detail);
         BoardCommentDto upcomm = boardService.printComment(id);
         model.addAttribute("upcomm",upcomm);
 
@@ -187,9 +189,12 @@ public class BoardController {
     }
 
 
+
+
     @PostMapping("/updatedat/{pid}/{id}")
     public String updatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, @PathVariable("updat") String updat, Model model){
         boardService.updatedat(id, updat);
+        BoardDto board = boardService.printBoardById(pid);
 
         return "redirect:/detailviewbyid/"+pid;
     }
