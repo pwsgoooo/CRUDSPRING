@@ -10,13 +10,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.sql.Timestamp;
 import java.util.List;
-//import com.example.demo.dto.BoardCommentDto;
-//import org.apache.ibatis.annotations.ResultMap;
-//import org.springframework.web.multipart.MultipartFile;
 
-//import java.util.ArrayList;
-//
-// import java.util.Map;
 
 @Mapper
 public interface BoardMapper {
@@ -38,10 +32,13 @@ public interface BoardMapper {
 
     List<BoardDto> printBoardList();
 
+
+    List<BoardDto> searchBoardLists_(Condition condition);
+
     BoardDto printBoardById(Long id);
     List<BoardCommentDto> printComments(Long id);
 
-    List<BoardCommentDto> printComments_forupdate(Long id, Long pid);
+    List<BoardCommentDto> printComments_forupdate(Long id);
     BoardCommentDto printComment(Long id);
 
     void registerBoard(BoardDto boardDto);

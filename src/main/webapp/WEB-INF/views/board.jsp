@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>(ʃƪ ˘ ³˘) Board List </title>
+    <title> 게시글 목록 </title>
     <style>
         html,body{
             margin:0;
@@ -215,7 +215,7 @@
 
         function consearch(){
             $.ajax({
-                type:"GET",
+                type:"POST",
                 url:"/consearch",
                 data:{
                     searching: searching,
@@ -237,7 +237,7 @@
     <h3 style="display: block; cursor:grab;" onclick="window.location.href='/board';">게시판 목록</h3>
     <p class="inb">검색된 게시물 <span id="currcnt" style="color:#14AAFF"> 0 </span> / 총 게시물 <span id="totalcnt" style="color:#14AAFF"> 0 </span></p>
     <div class="inb right0" >
-        <form action="/consearch" method="get" id="searchForm" class="inb right0" style="display: inline-flex">
+        <form action="/consearch" method="post" id="searchForm" class="inb right0" style="display: inline-flex">
             <label for="searching">검색조건</label>
             <select name="searching" id="searching">
                 <option value="작성자" name="searching">작성자</option>
@@ -249,27 +249,32 @@
         </form>
         <script>
             const searchForm = document.getElementById("searchForm");
-            const searching = document.getElementById("searching");
-            const sccon = document.getElementById("sccon");
+            const searching = document.getElementById("searching").value;
+            const sccon = document.getElementById("sccon").value;
             const staystatus = localStorage.getItem('staystatus');
             if(staystatus) {
                 sccon.value= staystatus;
             }
 
-            searchForm.addEventListener('submit',function(){
-                localStorage.setItem('staystatus1',searching.value);
-                localStorage.setItem('staystatus2',sccon.value);
-            });
-            function conseach(){
+            function consearch(){
+                console.log("searching value:::",searching);
+                localStorage.setItem('searching',searching.data);
+                localStorage.setItem('sccon',sccon.textContent);
+                searchForm.addEventListener('submit',function(){
+                    ssearching = localStorage.getItem(searching);
+                    localStorage.getItem(sccon);
+                });
                 const searching = document.getElementById("searching").value;
                 const sccon = document.getElementById("sccon").value;
                 $.ajax({
                     url:"/consearch",
                     method:"GET",
-                    data:{
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    data:JSON.stringify({
                         "searching": searching,
                         "sccon":sccon
-                    }
+                    })
                 });
             }
         </script>

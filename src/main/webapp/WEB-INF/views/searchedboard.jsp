@@ -175,33 +175,61 @@
         function toupdate(id) {
             window.location.href = "/detailviewbyid/" + id;
         }
+
+        const searchForm = document.getElementById("searchForm");
+        const searching = document.getElementById("searching").value;
+        const sccon = document.getElementById("sccon").value;
+        const staystatus = localStorage.getItem('staystatus');
+        if(staystatus) {
+            sccon.value= staystatus;
+        }
+
+        function consearch() {
+            console.log("searching value:::", searching);
+            localStorage.setItem('searching', searching);
+            localStorage.setItem('sccon', sccon);
+            searchForm.addEventListener('submit', function () {
+                ssearching = localStorage.getItem(searching);
+                localStorage.getItem(sccon);
+            });
+            const searching = document.getElementById("searching").value;
+            const sccon = document.getElementById("sccon").value;
+            $.ajax({
+                url: "/consearch",
+                method: "GET",
+                data: {
+                    "searching": searching,
+                    "sccon": sccon
+                }
+            });
+        }
     </script>
 </head>
 <body>
 <script>
-    window.onload=function(){
-        if("${datamsg}"){
+    window.onload = function () {
+        if ("${datamsg}") {
             alert("${datamsg}");
         }
-        if("${msg}"){
+        if ("${msg}") {
             alert("${msg}");
         }
 
         let totalcnt = "0";
         let currcnt = 0;
-        if("${totalCount}"){
-            totalcnt="${totalCount}";
+        if ("${totalCount}") {
+            totalcnt = "${totalCount}";
         }
         document.getElementById("totalcnt").textContent = totalcnt;
 
-        if("${currcnt}"){
-            currcnt="${currcnt}";
+        if ("${currcnt}") {
+            currcnt = "${currcnt}";
         }
         document.getElementById("currcnt").textContent = currcnt;
 
         const pitems = document.getElementsByClassName('page-item');
-        for(var i = 0; i < pitems.length; i++){
-            pitems[i].addEventListener('click', function(){
+        for (var i = 0; i < pitems.length; i++) {
+            pitems[i].addEventListener('click', function () {
                 this.ClassList.add('active');
             })
 
@@ -210,12 +238,12 @@
         const searchForm = document.getElementById("searchForm");
         const sccon = document.getElementById("sccon");
         const staystatus = localStorage.getItem('staystatus');
-        if(staystatus) {
-            sccon.value= staystatus;
+        if (staystatus) {
+            sccon.value = staystatus;
         }
 
-        searchForm.addEventListener('submit',function(){
-            localStorage.setItem('staystatus',sccon.value);
+        searchForm.addEventListener('submit', function () {
+            localStorage.setItem('staystatus', sccon.value);
         });
     }
 </script>
@@ -272,7 +300,7 @@
                 <!-- Previous Button -->
                 <c:if test="${nowPage > 1}">
                     <li class="page-item">
-                        <a class="page-link" href="<c:url value='/board'/>?page=${nowPage - 1}&size=${size}" aria-label="Previous">
+                        <a class="page-link" href="<c:url value='/consearch'/>?page=${nowPage - 1}&size=${size}" aria-label="Previous">
                             &laquo;
                         </a>
                     </li>
@@ -284,9 +312,9 @@
                 </c:if>
 
                 <!-- Page Number Links -->
-                <c:forEach var="i" begin="1" end="${endPage}">
+                <c:forEach var="i" begin="1" end="${totalCount}">
                     <li class="page-item <c:if test="${i == nowPage}">active</c:if>">
-                        <a class="page-link" href="<c:url value='/board'/>?page=${i}&size=${size}">
+                        <a class="page-link" href="<c:url value='/consearch'/>?page=${i}&size=20">
                                 ${i}
                         </a>
                     </li>
@@ -295,7 +323,7 @@
                 <!-- Next Button -->
                 <c:if test="${nowPage < endPage}">
                     <li class="page-item">
-                        <a class="page-link" href="<c:url value='/board'/>?page=${nowPage + 1}&size=${size}" aria-label="Next">
+                        <a class="page-link" href="<c:url value='/consearch'/>?page=${nowPage + 1}&size=${size}" aria-label="Next">
                             &raquo;
                         </a>
                     </li>

@@ -22,9 +22,31 @@
         select * from board where title LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
     </select>
 
-    <select id="searchBoardLists_date" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
+    <select id="searchBoardLists_" parameterType="com.example.demo.dto.Condition" resultType="com.example.demo.dto.BoardDto">
+        SELECT * FROM board
+        <where>
+            board.del_date IS NULL
+            <if test="searching == '작성자'">
+                AND reg_member LIKE CONCAT('%', #{sccon}, '%')
+            </if>
+            <if test="searching == '제목'">
+                AND title LIKE CONCAT('%', #{sccon}, '%')
+            </if>
+            <if test="searching == '작성일'">
+                AND TO_CHAR(reg_date, 'YYYY-MM-DD') LIKE CONCAT('%', #{sccon}, '%')
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <select id="searchBoardLists" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
         select * from board where reg_date LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
     </select>
+
+
+
 
     <update id="updatedat" parameterType="com.example.demo.dto.BoardCommentDto">
         UPDATE board_comment
@@ -95,11 +117,11 @@
     <update id="updateBoard" parameterType="com.example.demo.dto.BoardDto">
         UPDATE board
         SET
-            title = COALESCE(#{title},title),
-            content = COALESCE(#{content},content),
-            mod_date = #{modDate},
-            mod_ip = #{modIp},
-            mod_member = #{modMember}
+        title = COALESCE(#{title},title),
+        content = COALESCE(#{content},content),
+        mod_date = #{modDate},
+        mod_ip = #{modIp},
+        mod_member = #{modMember}
         WHERE id = #{id}
         <selectKey order="BEFORE" resultType="java.lang.Long" keyProperty="id">
             select id from board WHERE id = #{id};
@@ -109,14 +131,14 @@
     <update id="softDelBoard" parameterType="com.example.demo.dto.BoardDto">
         UPDATE board
         SET
-            title = COALESCE(#{title},title),
-            content = COALESCE(#{content},content),
-            mod_date = COALESCE(#{modDate},mod_date),
-            mod_ip = COALESCE(#{modIp},mod_ip),
-            mod_member = COALESCE(#{modMember},mod_member),
-            del_date = #{delDate},
-            del_ip = #{delIp},
-            del_member = #{delMember}
+        title = COALESCE(#{title},title),
+        content = COALESCE(#{content},content),
+        mod_date = COALESCE(#{modDate},mod_date),
+        mod_ip = COALESCE(#{modIp},mod_ip),
+        mod_member = COALESCE(#{modMember},mod_member),
+        del_date = #{delDate},
+        del_ip = #{delIp},
+        del_member = #{delMember}
         WHERE id = #{id}
         <selectKey order="BEFORE" resultType="java.lang.Long" keyProperty="id">
             select id from board WHERE id = #{id};
@@ -142,6 +164,3 @@
     </select>
 
 </mapper>
-
-
-

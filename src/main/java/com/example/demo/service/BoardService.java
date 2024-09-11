@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.dto.BoardCommentDto;
 import com.example.demo.dto.BoardDto;
+import com.example.demo.dto.Condition;
 import com.example.demo.mapper.BoardMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
 import java.sql.Time;
@@ -79,7 +81,7 @@ public class BoardService {
     }
 
 
-
+    @Transactional
     public List<BoardDto> searchBoardLists(String searching,String sccon) {
         List<BoardDto> returnlist = new ArrayList<>();
 
@@ -93,6 +95,21 @@ public class BoardService {
         return returnlist;
 
     }
+
+//
+    @Transactional
+    public List<BoardDto> searchBoardLists_(Condition condition){
+        int offset = (condition.getPage()-1)*condition.getSize();
+        condition.setPage(offset);
+        condition.setSize(20);
+        List<BoardDto> conlist = boardMapper.searchBoardLists_(condition);
+        return conlist;
+    }
+//
+
+
+
+
 
     @Transactional
     public List<BoardDto> printBoardList() {
@@ -121,8 +138,8 @@ public class BoardService {
     }
 
     @Transactional
-    public List<BoardCommentDto> printComments_forupdate(Long id, Long pid){
-        List<BoardCommentDto> commentfupdate = boardMapper.printComments_forupdate(id, pid);
+    public List<BoardCommentDto> printComments_forupdate(Long id){
+        List<BoardCommentDto> commentfupdate = boardMapper.printComments_forupdate(id);
         return commentfupdate;
     }
 
@@ -200,18 +217,18 @@ public class BoardService {
     }
 
     @Transactional
-    public void updatedat(Long id, String inputdt) {
-        BoardCommentDto updat = boardMapper.printComment(id);
+    public void updatedat(Long id, String updat) {
+        BoardCommentDto boardCommentDto = boardMapper.printComment(id);
         Timestamp modDate = new Timestamp(System.currentTimeMillis());
         String clientIp = request.getLocalAddr();
         String modMember = "anonymous";
 
-        updat.setId(id);
-        updat.setComment(inputdt);
-        updat.setModDate(modDate);
-        updat.setModIp(clientIp);
-        updat.setModMember(modMember);
-        boardMapper.updatedat(updat);
+        boardCommentDto.setId(id);
+        boardCommentDto.setComment(updat);
+        boardCommentDto.setModDate(modDate);
+        boardCommentDto.setModIp(clientIp);
+        boardCommentDto.setModMember(modMember);
+        boardMapper.updatedat(boardCommentDto);
     }
 
     @Transactional
@@ -222,9 +239,9 @@ public class BoardService {
         String delMember = "anonymous";
 
         softDeldat.setId(id);
-        softDeldat.setModIp(clientIp);
-        softDeldat.setModDate(delDate);
-        softDeldat.setModMember(delMember);
+        softDeldat.setDelIp(clientIp);
+        softDeldat.setDelDate(delDate);
+        softDeldat.setDelMember(delMember);
         boardMapper.softDeldat(softDeldat);
     }
 

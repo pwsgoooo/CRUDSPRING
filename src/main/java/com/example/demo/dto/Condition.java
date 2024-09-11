@@ -4,7 +4,16 @@ import lombok.Data;
 
 @Data
 public class Condition {
+//    private String sccon;
+//    private Long offset;
 
-    private String searching;
-    private String sccon;
+
+    private Integer page;
+
+    private Integer size;
+
+
+
+
+
 }
