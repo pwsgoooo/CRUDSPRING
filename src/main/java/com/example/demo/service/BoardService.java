@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.BoardCommentDto;
 import com.example.demo.dto.BoardDto;
+import com.example.demo.dto.Condition;
 import com.example.demo.mapper.BoardMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.el.stream.Optional;
@@ -79,19 +80,43 @@ public class BoardService {
     }
 
 
-
-    public List<BoardDto> searchBoardLists(String searching,String sccon) {
+    @Transactional
+    public List<BoardDto> searchBoardLists(Condition condition) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         List<BoardDto> returnlist = new ArrayList<>();
+        String searching = condition.getSearching();
+        String sccon = condition.getSccon();
+
 
         if ("작성자".equals(searching)){
             returnlist =  boardMapper.searchBoardLists_mem(sccon);
-        } else if ("제목".equals(searching)) {
+        }
+        if ("제목".equals(searching)){
             returnlist = boardMapper.searchBoardLists_title(sccon);
-        }else if("작성일".equals(searching)){
+        }
+        if("작성일".equals(searching)){
             returnlist = boardMapper.searchBoardLists_date(sccon);
-        } //else로 전체 리스트 조회하는 방법 고려안해도 될듯:제목 텍스트 클릭시 맨 첫화면으로 감
-        return returnlist;
+        }
 
+        return returnlist.stream().map(board -> {
+            BoardDto dto = new BoardDto();
+            dto.setId(board.getId());
+            dto.setTitle(board.getTitle());
+            dto.setRegDate(board.getRegDate());
+            dto.setRegIp(board.getRegIp());
+            dto.setRegMember(board.getRegMember());
+            dto.setDipdate(board.getRegIp());
+
+            DateTimeFormatter formatter;
+            if (board.getRegDate().toLocalDateTime().toLocalDate().isEqual(timestamp.toLocalDateTime().toLocalDate())) {
+                formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            } else {
+                formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            }
+            dto.setDipdate(board.getRegDate().toLocalDateTime().format(formatter));
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Transactional

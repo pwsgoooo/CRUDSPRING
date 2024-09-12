@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>(ʃƪ ˘ ³˘) Board List </title>
+    <title> Board List </title>
     <style>
         html,body{
             margin:0;
@@ -249,8 +249,7 @@
         </form>
         <script>
             const searchForm = document.getElementById("searchForm");
-            const searching = document.getElementById("searching");
-            const sccon = document.getElementById("sccon");
+            const sccon = document.getElementById("sccon").value;
             const staystatus = localStorage.getItem('staystatus');
             if(staystatus) {
                 sccon.value= staystatus;
@@ -260,15 +259,35 @@
                 localStorage.setItem('staystatus1',searching.value);
                 localStorage.setItem('staystatus2',sccon.value);
             });
-            function conseach(){
-                const searching = document.getElementById("searching").value;
-                const sccon = document.getElementById("sccon").value;
+
+            searchForm.addEventListener('submit',function(){
+                localStorage.setItem('staystatus',sccon);
+            });
+
+            const searching = document.getElementById("searching").value;
+
+
+            const inum = document.getElementById("forpaging_btn");
+            let page = 2;
+            inum.addEventListener('click',function(){
+                page = inum.textContent;
+                console.log("page:::",page);
+                consearch();
+            });
+            function consearch(){
                 $.ajax({
+                    type:"GET",
                     url:"/consearch",
-                    method:"GET",
                     data:{
-                        "searching": searching,
-                        "sccon":sccon
+                        searching: searching,
+                        sccon : sccon,
+                        page : page
+                    },
+                    error: function(error){
+                        console.log("errrrrrrr");
+                    },
+                    success: function(data){
+                        console.log("succccccc");
                     }
                 });
             }

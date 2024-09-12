@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.BoardCommentDto;
 import com.example.demo.dto.BoardDto;
+import com.example.demo.dto.Condition;
 import com.example.demo.mapper.BoardMapper;
 import com.example.demo.service.BoardService;
 import lombok.extern.log4j.Log4j2;
@@ -36,8 +37,8 @@ public class BoardController {
         long totalCount = boardService.cntLists();
         long totalPages = (totalCount + 20 - 1) / 20;
         long startPage = Math.max(nowPage - 4, 1);
-        long endPage = Math.min(nowPage + 4, totalPages);
-        long currcnt = (nowPage<totalPages) ? 20 : totalCount%20;
+        long endPage = Math.min(startPage + 4 , totalPages);
+        //long currcnt = (nowPage<totalPages) ? 20 : totalCount%20;
 
         model.addAttribute("list", list);
 //        model.addAttribute("list2", list2);
@@ -46,7 +47,7 @@ public class BoardController {
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("currcnt", currcnt);
+        model.addAttribute("currcnt", totalCount);
 
         return "board";
     }
@@ -58,14 +59,19 @@ public class BoardController {
                             @RequestParam(name = "page", defaultValue = "0") long offset,
                             @RequestParam(name="page", defaultValue = "1") long nowPage,
                             Model model){
-        List<BoardDto> list = boardService.searchBoardLists(searching,sccon); //offset
+
+        Condition condition = new Condition();
+        condition.setSccon(sccon);
+        condition.setSearching(searching);
+        List<BoardDto> list = boardService.searchBoardLists(condition);
         model.addAttribute("list",list);
 
-        long totalCount = list.size();
-        long totalPages = (totalCount + 20 - 1) / 20;
+        long totalCount = boardService.cntLists();
+        long currcnt = list.size();
+        long totalPages = (currcnt + 20 - 1) / 20;
         long startPage = Math.max(nowPage - 4, 1);
-        long endPage = Math.min(nowPage + 4, totalPages);
-        long currcnt = (nowPage<totalPages) ? 20 : totalCount%20;
+        long endPage = Math.min(startPage + 4 , totalPages);
+        //long currcnt = (nowPage<totalPages) ? 20 : totalCount%20;
 
         model.addAttribute("list", list);
         model.addAttribute("totalCount", totalCount);
@@ -74,8 +80,10 @@ public class BoardController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("currcnt", currcnt);
+        model.addAttribute("searching",searching);
+        model.addAttribute("sccon",sccon);
 
-        return "board";
+        return "searchedboard";
     }
 
 
@@ -141,24 +149,12 @@ public class BoardController {
     }
 
 
-//    @PostMapping("/updateboard/{id}")
-//    @GetMapping("/updateboard/{id}")
-//    public String updateboard(@PathVariable("id") Long id, @RequestParam("title") String title,@RequestParam("content") String content ) throws IOException {
-//        try {
-//            boardService.updateBoard(id, title, content);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return "/detailviewbyid/"+id;
-//    }
 
     @PostMapping("/updateboard/{id}")
     public String updateboard(@PathVariable Long id, @RequestParam("title") String title, @RequestParam("content") String content){
         boardService.updateBoard(id, title, content);
         return "redirect:/detailviewbyid/"+id; // 이쪽경로로 완료처리
     }
-
-
 
     @GetMapping("/delboard/{id}")
     public String doDelete(@PathVariable("id") Long id) throws IOException{
@@ -171,9 +167,7 @@ public class BoardController {
             return "redirect:/board";
         }
     }
-//댓글 수정 삭제
 
-    // pid : 본 게시글 id, id : 해당 pid의 댓글 id
     @GetMapping("/updatedatp/{pid}/{id}")
     public String toupdatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id,Model model){
         BoardCommentDto upcomm = boardService.printComment(id);
@@ -182,10 +176,8 @@ public class BoardController {
         List<BoardCommentDto> exupcomm = boardService.printComments_forupdate(id, pid);
         model.addAttribute("exupcomm",exupcomm);
 
-
         return "/detailviewbyidupdatedat";
     }
-
 
     @PostMapping("/updatedat/{pid}/{id}")
     public String updatedat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, @PathVariable("updat") String updat, Model model){
@@ -193,8 +185,6 @@ public class BoardController {
 
         return "redirect:/detailviewbyid/"+pid;
     }
-
-
 
     @GetMapping("/updeldat/{pid}/{id}")
     public String updeldat(@PathVariable("pid") Long pid,@PathVariable("id") Long id, Model model){
@@ -207,43 +197,4 @@ public class BoardController {
             return "redirect:/board";
         }
     }
-
-
-    @GetMapping("/test")
-    public String test(){
-        return "test";
-    }
-
-    @GetMapping("/test2")
-    public String test2(Model model){
-        List<BoardDto> list = boardService.printBoardList();
-        model.addAttribute("list", list);
-         System.out.println(list);
-        return "test2";
-    }
 }
-
-//   print! all board rows !success
-//    @GetMapping("/board")
-//    public String gethome(@RequestParam(name = "page", defaultValue = "0") long offset, @RequestParam(name="page", defaultValue = "1") long nowPage, Model model) {
-//        List<BoardDto> list = boardService.printBoardList_i(offset);
-//
-//
-//
-//        long totalCount = boardService.cntLists();
-//        long totalPages = (totalCount + 20 - 1) / 20;
-//        long startPage = Math.max(nowPage - 4, 1);
-//        long endPage = Math.min(nowPage + 4, totalPages);
-//        long currcnt = (nowPage<totalPages) ? 20 : totalCount%20;
-//
-//        model.addAttribute("list", list);
-//        model.addAttribute("totalCount", totalCount);
-//        model.addAttribute("totalPages", totalPages);
-//        model.addAttribute("nowPage", nowPage);
-//        model.addAttribute("startPage", startPage);
-//        model.addAttribute("endPage", endPage);
-//        model.addAttribute("currcnt", currcnt);
-//
-//        return "board";
-//    }
-

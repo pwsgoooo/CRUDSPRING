@@ -14,16 +14,16 @@
         ORDER BY reg_date DESC;
     </select>
 
-    <select id="searchBoardLists_mem" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
-        select * from board where reg_member LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
+    <select id="searchBoardLists_mem" parameterType="com.example.demo.dto.Condition" resultType="com.example.demo.dto.BoardDto">
+        select * from board where reg_member LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL ORDER BY reg_date DESC;
     </select>
 
-    <select id="searchBoardLists_title" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
-        select * from board where title LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
+    <select id="searchBoardLists_title" parameterType="com.example.demo.dto.Condition" resultType="com.example.demo.dto.BoardDto">
+        select * from board where title LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL ORDER BY reg_date DESC;
     </select>
 
-    <select id="searchBoardLists_date" parameterType="java.lang.String" resultType="com.example.demo.dto.BoardDto">
-        select * from board where reg_date LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL
+    <select id="searchBoardLists_date" parameterType="com.example.demo.dto.Condition" resultType="com.example.demo.dto.BoardDto">
+        select * from board where TO_CHAR(reg_date,'yyyy-MM-DD') LIKE CONCAT('%', #{sccon}, '%') and board.del_date IS NULL ORDER BY reg_date DESC;
     </select>
 
     <update id="updatedat" parameterType="com.example.demo.dto.BoardCommentDto">

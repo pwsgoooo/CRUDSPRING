@@ -8,7 +8,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!-- 데이터소스 설정 -->
+    <!-- 데이터소스 -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="${spring.datasource.driver-class-name}"/>
         <property name="url" value="${spring.datasource.url}"/>
@@ -16,19 +16,19 @@
         <property name="password" value="${spring.datasource.password}"/>
     </bean>
 
-    <!-- MyBatis SqlSessionFactory 설정 -->
+    <!-- MyBatis SqlSessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations">
             <list>
-                <value>classpath:mappers/*.xml</value> <!-- Mapper XML 파일 위치 -->
+                <value>classpath:mappers/*.xml</value>
             </list>
         </property>
     </bean>
 
-    <!-- Mapper 스캔 설정 -->
+    <!-- Mapper 스캔 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.example.mapper"/> <!-- Mapper 인터페이스의 패키지 -->
+        <property name="basePackage" value="com.example.demo.mapper"/>
     </bean>
 
     <bean id="characterEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter">

@@ -5,13 +5,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>(ʃƪ ˘ ³˘) Board List </title>
+    <title> Board List </title>
     <style>
         html,body{
             margin:0;
             padding: 0;
-            /*background-color: #333333;*/
-            /*color:white;*/
+            background-color: #333333;
+            color:white;
         }
         .container{
             width:70%;
@@ -20,7 +20,7 @@
 
         .w100{
             width:100%;
-             padding:7px;
+            padding:7px;
         }
         #title{
             margin-bottom: 4px;
@@ -130,7 +130,7 @@
         }
 
 
-    /*   페이징 */
+        /*   페이징 */
         .pagination {
             display: flex;
             list-style: none;
@@ -207,17 +207,51 @@
 
         }
 
+
+    }
         const searchForm = document.getElementById("searchForm");
-        const sccon = document.getElementById("sccon");
+        const sccon = document.getElementById("sccon").value;
         const staystatus = localStorage.getItem('staystatus');
         if(staystatus) {
             sccon.value= staystatus;
         }
 
         searchForm.addEventListener('submit',function(){
-            localStorage.setItem('staystatus',sccon.value);
+            localStorage.setItem('staystatus1',searching.value);
+            localStorage.setItem('staystatus2',sccon.value);
         });
-    }
+
+        searchForm.addEventListener('submit',function(){
+            localStorage.setItem('staystatus',sccon);
+        });
+
+        const searching = document.getElementById("searching").value;
+
+
+        const inum = document.getElementById("forpaging_btn");
+        let page = 2;
+        inum.addEventListener('click',function(){
+            page = inum.textContent;
+            console.log("page:::",page);
+            consearch();
+        });
+        function consearch(){
+            $.ajax({
+                type:"GET",
+                url:"/consearch",
+                data:{
+                    searching: searching,
+                    sccon : sccon,
+                    page : page
+                },
+                error: function(error){
+                    console.log("errrrrrrr");
+                },
+                success: function(data){
+                    console.log("succccccc");
+                }
+            });
+        }
 </script>
 <div class="container">
     <h3>게시판 목록</h3>
@@ -231,7 +265,7 @@
                 <option value="작성일">작성일</option>
             </select>
             <input type="text" name="sccon" id="sccon">
-            <input type="submit" value="검색" class="bglighblue btn" style="width:50px;" />
+            <input type="submit" onclick="consearch();" value="검색" class="bglighblue btn" style="width:50px;" />
         </form>
     </div>
 
@@ -248,11 +282,12 @@
                 <c:forEach var="li" items="${list}">
                     <tr>
                         <td><c:out value="${li.id}"/></td>
-                        <td style="text-align: left; padding-left: 20px;" id="todetail" class="ellip" onclick="toupdate(parseInt('${li.id}'));"><c:out value="${li.title}"/></td>
+                        <td style="text-align: left; padding-left: 20px; white-space: nowrap;text-overflow:ellipsis; overflow: hidden; max-width: 50px;" id="todetail" class="ellip" onclick="toupdate(parseInt('${li.id}'));"><c:out value="${li.title}"/></td>
                         <td><c:out value="${li.regMember}"/></td>
-                        <td><c:out value="${li.display_date}"/></td>
+                        <td><c:out value="${li.dipdate}"/></td>
                     </tr>
                 </c:forEach>
+
             </c:when>
             <c:otherwise>
                 <tr>
@@ -272,7 +307,7 @@
                 <!-- Previous Button -->
                 <c:if test="${nowPage > 1}">
                     <li class="page-item">
-                        <a class="page-link" href="<c:url value='/board'/>?page=${nowPage - 1}&size=${size}" aria-label="Previous">
+                        <a class="page-link" href="<c:url value='/consearch'/>?page=${nowPage - 1}&size=${size}" aria-label="Previous">
                             &laquo;
                         </a>
                     </li>
@@ -286,7 +321,8 @@
                 <!-- Page Number Links -->
                 <c:forEach var="i" begin="1" end="${endPage}">
                     <li class="page-item <c:if test="${i == nowPage}">active</c:if>">
-                        <a class="page-link" href="<c:url value='/board'/>?page=${i}&size=${size}">
+<%--                        <a id="forpaging_btn" class="page-link" href="<c:url value='/consearch'/>?page=${i}&size=${size}">--%>
+                        <a id="forpaging_btn" class="page-link" href="<c:url value='/consearch'/>?&searching=${s}&page=${i}&size=${size}">
                                 ${i}
                         </a>
                     </li>
@@ -295,7 +331,7 @@
                 <!-- Next Button -->
                 <c:if test="${nowPage < endPage}">
                     <li class="page-item">
-                        <a class="page-link" href="<c:url value='/board'/>?page=${nowPage + 1}&size=${size}" aria-label="Next">
+                        <a class="page-link" href="<c:url value='/consearch'/>?page=${nowPage + 1}&size=${size}" aria-label="Next">
                             &raquo;
                         </a>
                     </li>

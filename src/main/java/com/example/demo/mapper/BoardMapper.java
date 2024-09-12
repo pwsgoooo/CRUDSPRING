@@ -32,6 +32,10 @@ public interface BoardMapper {
 
 
 
+    List<BoardDto> searchBoardLists_mem(Condition condition);
+    List<BoardDto> searchBoardLists_title(Condition condition);
+    List<BoardDto> searchBoardLists_date(Condition condition);
+
     List<BoardDto> searchBoardLists_mem(String sccon);
     List<BoardDto> searchBoardLists_title(String sccon);
     List<BoardDto> searchBoardLists_date(String sccon);
